@@ -2,8 +2,17 @@ import { z } from 'zod';
 
 export const CURRENT_SCHEMA_VERSION = 1;
 
+const rawThemeSchema = z.union([
+  z.literal('nocturne'),
+  z.literal('laduree'),
+  // Backwards-compat alias for previously stored values
+  z.literal('midnight-editorial'),
+]);
+
 export const preferencesSchema = z.object({
-  theme: z.union([z.literal('midnight-editorial'), z.literal('laduree')]).default('laduree'),
+  theme: rawThemeSchema
+    .default('laduree')
+    .transform((value) => (value === 'midnight-editorial' ? 'nocturne' : value)),
   weekStartsOn: z.union([z.literal('sunday'), z.literal('monday')]),
   pomodoroMinutes: z.number().positive(),
   breakMinutes: z.number().positive(),

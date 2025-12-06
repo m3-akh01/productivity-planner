@@ -167,9 +167,9 @@ function PreferencesStep({
             </button>
             <button
               className={`${styles.toggleBtn} ${
-                preferences.theme === 'midnight-editorial' ? styles.toggleActive : ''
+                preferences.theme === 'nocturne' ? styles.toggleActive : ''
               }`}
-              onClick={() => onUpdate({ theme: 'midnight-editorial' })}
+              onClick={() => onUpdate({ theme: 'nocturne' })}
             >
               Nocturne
             </button>

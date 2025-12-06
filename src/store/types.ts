@@ -1,6 +1,6 @@
 import { WeekStartOption } from '../core/date';
 
-export type ThemeId = 'midnight-editorial' | 'laduree';
+export type ThemeId = 'nocturne' | 'laduree';
 
 export type Preferences = {
   theme: ThemeId;

@@ -171,7 +171,7 @@ export default function SettingsPage() {
                       ariaLabel: 'Use Ladurée theme',
                     },
                     {
-                      value: 'midnight-editorial',
+                      value: 'nocturne',
                       label: 'Nocturne',
                       ariaLabel: 'Use Nocturne theme',
                     },

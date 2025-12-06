@@ -1,0 +1,702 @@
+/* ============================================
+   Settings Page — Styles
+   ============================================ */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* ============================================
+   Collapsible Sections
+   ============================================ */
+
+.section {
+  background: var(--surface-glass);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.sectionHeader {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-5);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.sectionHeader:hover {
+  background: var(--surface-glass-hover);
+}
+
+.sectionHeaderContent {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--text-secondary);
+}
+
+.sectionTitle {
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.chevron {
+  color: var(--text-muted);
+  transition: transform var(--transition-fast);
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.sectionContent {
+  padding: 0 var(--space-5) var(--space-5);
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Danger Section Header --- */
+.sectionHeaderDanger .sectionHeaderContent {
+  color: var(--danger);
+}
+
+.dangerTitle {
+  color: var(--danger) !important;
+}
+
+/* ============================================
+   Preferences Grid
+   ============================================ */
+
+.prefsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.prefCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  background: var(--bg-base);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-4) var(--space-5);
+  transition: border-color var(--transition-fast);
+}
+
+.prefCard:hover {
+  border-color: var(--border-default);
+}
+
+.prefInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.prefTitle {
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  color: var(--text-primary);
+  margin: 0 0 var(--space-1) 0;
+}
+
+.prefDesc {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.prefNote {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin: var(--space-2) 0 0;
+  line-height: 1.4;
+}
+
+/* ============================================
+   Toggle Group
+   ============================================ */
+
+.toggleGroup {
+  display: flex;
+  background: var(--surface-glass);
+  border-radius: var(--radius-md);
+  padding: 3px;
+  gap: 2px;
+}
+
+.toggleBtn {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-4);
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    background var(--transition-fast);
+}
+
+.toggleBtn:hover {
+  color: var(--text-secondary);
+}
+
+.toggleActive {
+  color: var(--text-inverse) !important;
+  background: var(--accent) !important;
+}
+
+/* ============================================
+   Stepper
+   ============================================ */
+
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--surface-glass);
+  border-radius: var(--radius-md);
+  padding: 3px;
+}
+
+.stepperBtn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-light);
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    background var(--transition-fast);
+}
+
+.stepperBtn:hover {
+  color: var(--text-primary);
+  background: var(--bg-base);
+}
+
+.stepperBtn:active {
+  transform: scale(0.95);
+}
+
+.stepperValue {
+  font-family: var(--font-mono);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-medium);
+  color: var(--text-primary);
+  min-width: 40px;
+  text-align: center;
+}
+
+/* ============================================
+   Switch
+   ============================================ */
+
+.switch {
+  position: relative;
+  width: 52px;
+  height: 28px;
+  background: var(--bg-base);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.switch:hover {
+  border-color: var(--border-strong);
+}
+
+.switchOn {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.switchThumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  background: var(--text-primary);
+  border-radius: var(--radius-full);
+  transition: transform var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.switchOn .switchThumb {
+  transform: translateX(24px);
+}
+
+/* ============================================
+   Data Card
+   ============================================ */
+
+.dataCard {
+  background: var(--bg-base);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.dataInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.dataRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dataLabel {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.dataValue {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.dataActions {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.dataBtn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text-secondary);
+  background: var(--surface-glass);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.dataBtn:hover {
+  background: var(--surface-glass-hover);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
+.dataBtn:active {
+  transform: scale(0.98);
+}
+
+/* ============================================
+   Danger Zone
+   ============================================ */
+
+.dangerCard {
+  background: var(--danger-muted);
+  border: 1px solid rgba(248, 113, 113, 0.2);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+}
+
+.dangerInfo {
+  flex: 1;
+}
+
+.dangerHeading {
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  color: var(--danger);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.dangerDesc {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.dangerBtn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text-inverse);
+  background: var(--danger);
+  border: none;
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-5);
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    transform var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.dangerBtn:hover {
+  background: #ef4444;
+}
+
+.dangerBtn:active {
+  transform: scale(0.97);
+}
+
+/* ============================================
+   Modal
+   ============================================ */
+
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  z-index: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+  animation: modalPop 0.25s ease;
+  box-shadow: var(--shadow-lg);
+}
+
+@keyframes modalPop {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.modalDanger {
+  border-color: rgba(248, 113, 113, 0.3);
+}
+
+.modalIcon {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--space-5);
+  background: var(--accent-muted);
+  border-radius: var(--radius-full);
+  color: var(--accent);
+}
+
+.modalIconDanger {
+  background: var(--danger-muted);
+  color: var(--danger);
+}
+
+.modalTitle {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+  margin: 0 0 var(--space-3) 0;
+}
+
+.modalTitleDanger {
+  color: var(--danger);
+}
+
+.modalText {
+  font-size: var(--text-base);
+  color: var(--text-secondary);
+  margin: 0 0 var(--space-5) 0;
+  line-height: 1.6;
+}
+
+.modalText strong {
+  color: var(--text-primary);
+}
+
+.modalFile {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface-glass);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-5);
+}
+
+.modalError {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: var(--danger-muted);
+  border: 1px solid rgba(248, 113, 113, 0.2);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  color: var(--danger);
+  margin-bottom: var(--space-5);
+}
+
+.modalActions {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: center;
+}
+
+.modalBtnSecondary {
+  flex: 1;
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text-secondary);
+  background: var(--surface-glass);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-5);
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.modalBtnSecondary:hover {
+  background: var(--surface-glass-hover);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
+.modalBtnPrimary {
+  flex: 1;
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text-inverse);
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-5);
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.modalBtnPrimary:hover {
+  background: var(--accent-hover);
+}
+
+.modalBtnPrimary:active {
+  transform: scale(0.98);
+}
+
+.modalBtnDanger {
+  flex: 1;
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text-inverse);
+  background: var(--danger);
+  border: none;
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-5);
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    transform var(--transition-fast),
+    opacity var(--transition-fast);
+}
+
+.modalBtnDanger:hover:not(:disabled) {
+  background: #ef4444;
+}
+
+.modalBtnDanger:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.modalBtnDanger:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ============================================
+   Delete Confirmation
+   ============================================ */
+
+.deleteConfirm {
+  margin-bottom: var(--space-5);
+}
+
+.deleteConfirmLabel {
+  display: block;
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-3);
+}
+
+.deleteKeyword {
+  font-family: var(--font-mono);
+  font-weight: var(--weight-bold);
+  color: var(--danger);
+  background: var(--danger-muted);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+}
+
+.deleteConfirmInput {
+  width: 100%;
+  font-family: var(--font-mono);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-medium);
+  text-align: center;
+  letter-spacing: 0.1em;
+  color: var(--text-primary);
+  background: var(--surface-input);
+  border: 2px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.deleteConfirmInput:focus {
+  outline: none;
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px var(--danger-muted);
+}
+
+.deleteConfirmInput::placeholder {
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+}
+
+/* ============================================
+   Accessibility
+   ============================================ */
+
+.sectionHeader:focus-visible,
+.toggleBtn:focus-visible,
+.stepperBtn:focus-visible,
+.switch:focus-visible,
+.dataBtn:focus-visible,
+.dangerBtn:focus-visible,
+.modalBtnPrimary:focus-visible,
+.modalBtnSecondary:focus-visible,
+.modalBtnDanger:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+
+@media (max-width: 600px) {
+  .prefCard {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+  }
+
+  .prefCard > :last-child {
+    align-self: flex-start;
+  }
+
+  .dataActions {
+    flex-direction: column;
+  }
+
+  .dangerCard {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .modal {
+    padding: var(--space-6);
+  }
+
+  .modalActions {
+    flex-direction: column;
+  }
+}

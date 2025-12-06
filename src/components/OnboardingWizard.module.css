@@ -1,0 +1,509 @@
+/* ============================================
+   Onboarding Wizard — Styles
+   ============================================ */
+
+.wizard {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6);
+}
+
+.wizardCard {
+  width: 100%;
+  max-width: 560px;
+  background: var(--surface-glass);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  backdrop-filter: blur(16px);
+  animation: cardEntry 0.6s ease forwards;
+}
+
+@keyframes cardEntry {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* --- Wizard Header --- */
+.wizardHeader {
+  text-align: center;
+  margin-bottom: var(--space-8);
+}
+
+.brandMark {
+  display: inline-flex;
+  color: var(--accent);
+  margin-bottom: var(--space-4);
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.wizardTitle {
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-bold);
+  margin-bottom: var(--space-6);
+  letter-spacing: -0.02em;
+}
+
+/* --- Step Indicator --- */
+.stepIndicator {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+.stepDot {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background: var(--surface-input);
+  border: 2px solid var(--border-default);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background var(--transition-base),
+    border-color var(--transition-base),
+    transform var(--transition-fast);
+}
+
+.stepDot:hover {
+  transform: scale(1.05);
+}
+
+.stepDotActive {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.stepNumber {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: var(--text-muted);
+}
+
+.stepDotActive .stepNumber {
+  color: var(--text-inverse);
+}
+
+/* --- Wizard Body --- */
+.wizardBody {
+  /* Container for step content */
+}
+
+/* --- Step Content --- */
+.stepContent {
+  animation: stepFade 0.4s ease forwards;
+}
+
+@keyframes stepFade {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.stepHeader {
+  text-align: center;
+  margin-bottom: var(--space-6);
+}
+
+.stepTitle {
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-black);
+  margin-bottom: var(--space-2);
+}
+
+.stepDescription {
+  font-size: var(--text-lg);
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* --- Input Group --- */
+.inputGroup {
+  margin-bottom: var(--space-6);
+}
+
+.inputGroup input {
+  font-size: var(--text-xl);
+  padding: var(--space-4) var(--space-5);
+  text-align: center;
+}
+
+/* --- Greeting Preview --- */
+.greetingPreview {
+  background: var(--accent-muted);
+  border: 1px solid rgba(255, 107, 74, 0.2);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  margin-bottom: var(--space-6);
+  text-align: center;
+}
+
+.previewLabel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  margin-bottom: var(--space-3);
+}
+
+.previewDot {
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+  border-radius: var(--radius-full);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+.previewGreeting {
+  font-size: var(--text-xl);
+  font-weight: var(--weight-medium);
+  color: var(--text-primary);
+  margin: 0;
+}
+
+/* --- Greeting Samples --- */
+.greetingSamples {
+  margin-bottom: var(--space-8);
+}
+
+.samplesLabel {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  text-align: center;
+  margin-bottom: var(--space-4);
+}
+
+.samplesGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+
+.sampleCard {
+  background: var(--surface-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.sampleTime {
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.sampleGreeting {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+/* --- Step Actions --- */
+.stepActions {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.primaryAction {
+  min-width: 140px;
+}
+
+.primaryAction:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* --- Preferences Grid --- */
+.prefsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.prefCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  background: var(--surface-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4) var(--space-5);
+  transition: border-color var(--transition-fast);
+}
+
+.prefCard:hover {
+  border-color: var(--border-default);
+}
+
+.prefInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.prefTitle {
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  color: var(--text-primary);
+  margin: 0 0 var(--space-1) 0;
+}
+
+.prefDesc {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* --- Toggle Group --- */
+.toggleGroup {
+  display: flex;
+  background: var(--bg-base);
+  border-radius: var(--radius-md);
+  padding: 3px;
+  gap: 2px;
+}
+
+.toggleBtn {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-4);
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    background var(--transition-fast);
+}
+
+.toggleBtn:hover {
+  color: var(--text-secondary);
+}
+
+.toggleActive {
+  color: var(--text-inverse) !important;
+  background: var(--accent) !important;
+}
+
+/* --- Stepper --- */
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--bg-base);
+  border-radius: var(--radius-md);
+  padding: 3px;
+}
+
+.stepperBtn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-light);
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    background var(--transition-fast);
+}
+
+.stepperBtn:hover {
+  color: var(--text-primary);
+  background: var(--surface-glass);
+}
+
+.stepperBtn:active {
+  transform: scale(0.95);
+}
+
+.stepperValue {
+  font-family: var(--font-mono);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-medium);
+  color: var(--text-primary);
+  min-width: 40px;
+  text-align: center;
+}
+
+/* --- Switch --- */
+.switch {
+  position: relative;
+  width: 52px;
+  height: 28px;
+  background: var(--bg-base);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.switch:hover {
+  border-color: var(--border-strong);
+}
+
+.switchOn {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.switchThumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  background: var(--text-primary);
+  border-radius: var(--radius-full);
+  transition: transform var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.switchOn .switchThumb {
+  transform: translateX(24px);
+}
+
+/* --- Pledge Info --- */
+.pledgeInfo {
+  margin-bottom: var(--space-6);
+}
+
+.pledgeCard {
+  display: flex;
+  gap: var(--space-5);
+  background: var(--surface-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+}
+
+.pledgeIcon {
+  color: var(--success);
+  flex-shrink: 0;
+}
+
+.pledgeText h4 {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-medium);
+  color: var(--text-primary);
+  margin: 0 0 var(--space-3) 0;
+}
+
+.pledgeText ul {
+  margin: 0;
+  padding-left: var(--space-5);
+}
+
+.pledgeText li {
+  font-size: var(--text-base);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-2);
+}
+
+.pledgeText li:last-child {
+  margin-bottom: 0;
+}
+
+/* --- Responsive --- */
+@media (max-width: 600px) {
+  .wizard {
+    padding: var(--space-4);
+    align-items: flex-start;
+    padding-top: var(--space-8);
+  }
+
+  .wizardCard {
+    padding: var(--space-6);
+  }
+
+  .stepTitle {
+    font-size: var(--text-2xl);
+  }
+
+  .stepActions {
+    flex-direction: column;
+  }
+
+  .stepActions button {
+    width: 100%;
+  }
+
+  .samplesGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .prefCard {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+  }
+
+  .prefCard > :last-child {
+    align-self: flex-start;
+  }
+
+  .pledgeCard {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .pledgeIcon {
+    align-self: center;
+  }
+
+  .pledgeText ul {
+    text-align: left;
+  }
+}

@@ -263,7 +263,7 @@
   flex: 1;
   background: transparent;
   border: none;
-  padding: var(--space-2) 0;
+  padding: var(--space-2) var(--space-2);
   font-family: var(--font-text);
   font-size: var(--text-base);
   color: var(--text-primary);

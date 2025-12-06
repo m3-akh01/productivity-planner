@@ -3,7 +3,8 @@
    ============================================ */
 
 /* --- Font Imports --- */
-@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,500;12..96,700;12..96,900&family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;500;600&family=Caveat:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,500;12..96,700;12..96,900&family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;500;600&family=Caveat:wght@400;500;600;700&family=Handlee&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,700;9..144,900&family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500;6..72,600&family=Kalam:wght@300;400;700&display=swap');
 
 /* --- Design Tokens --- */
 :root {
@@ -11,7 +12,7 @@
   --font-display: 'Bricolage Grotesque', sans-serif;
   --font-text: 'Crimson Pro', Georgia, serif;
   --font-mono: 'JetBrains Mono', monospace;
-  --font-handwritten: 'Caveat', cursive;
+  --font-handwritten: 'Handlee', cursive;
 
   /* Font Weights */
   --weight-light: 300;
@@ -63,9 +64,11 @@
   --accent-hover: #FF8266;
   --accent-muted: rgba(255, 107, 74, 0.15);
   --accent-text: #FF6B4A;
+  --accent-glow: rgba(255, 107, 74, 0.35);
 
   --success: #34D399;
   --success-muted: rgba(52, 211, 153, 0.15);
+  --success-glow: rgba(52, 211, 153, 0.35);
   --danger: #F87171;
   --danger-muted: rgba(248, 113, 113, 0.15);
   --warning: #FBBF24;
@@ -120,6 +123,8 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  transition: background-color 250ms ease;
+  overflow-x: hidden;
 }
 
 body {
@@ -130,6 +135,8 @@ body {
   color: var(--text-primary);
   background-color: var(--bg-base);
   min-height: 100vh;
+  transition: background-color 250ms ease, color 250ms ease;
+  overflow-x: hidden;
 }
 
 /* Atmospheric Background */
@@ -143,6 +150,7 @@ body::before {
     var(--bg-noise);
   pointer-events: none;
   z-index: -1;
+  transition: background 300ms ease;
 }
 
 #root {
@@ -274,8 +282,8 @@ small, .text-sm {
 
 /* Pulse Glow */
 @keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 107, 74, 0); }
-  50% { box-shadow: 0 0 20px 4px rgba(255, 107, 74, 0.3); }
+  0%, 100% { box-shadow: 0 0 0 0 transparent; }
+  50% { box-shadow: 0 0 20px 4px var(--accent-glow); }
 }
 
 /* Scale Pop */
@@ -551,4 +559,108 @@ button:active,
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* ============================================
+   LADURÉE — Rose Pâtisserie Theme
+   ============================================ */
+
+[data-theme="laduree"] {
+  /* Typography */
+  --font-display: 'Fraunces', serif;
+  --font-text: 'Newsreader', Georgia, serif;
+  --font-handwritten: 'Kalam', cursive;
+
+  /* Background Layers */
+  --bg-base: #FAF6F1;
+  --bg-elevated: #FFFFFF;
+  --bg-surface: rgba(0, 0, 0, 0.025);
+  --bg-surface-hover: rgba(0, 0, 0, 0.045);
+  --bg-gradient-primary: radial-gradient(ellipse 80% 60% at 50% -20%, rgba(107, 91, 122, 0.12), transparent);
+  --bg-gradient-secondary: radial-gradient(ellipse 60% 40% at 80% 100%, rgba(74, 124, 89, 0.08), transparent);
+  --bg-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.02'/%3E%3C/svg%3E");
+  --bg-ruled-lines: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 27px,
+    rgba(107, 91, 122, 0.06) 27px,
+    rgba(107, 91, 122, 0.06) 28px
+  );
+
+  /* Surface & Cards */
+  --surface-glass: rgba(255, 255, 255, 0.75);
+  --surface-glass-hover: rgba(255, 255, 255, 0.88);
+  --surface-solid: #FFFFFF;
+  --surface-input: rgba(0, 0, 0, 0.04);
+
+  /* Borders (stronger) */
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-default: rgba(0, 0, 0, 0.12);
+  --border-strong: rgba(0, 0, 0, 0.18);
+  --border-accent: var(--accent);
+
+  /* Text Colors (sepia ink) */
+  --text-primary: #2D2A26;
+  --text-secondary: rgba(45, 42, 38, 0.78);
+  --text-muted: rgba(45, 42, 38, 0.55);
+  --text-inverse: #FFFFFF;
+
+  /* Accent (indigo ink with rose undertone) */
+  --accent: #6B5B7A;
+  --accent-hover: #574868;
+  --accent-muted: rgba(107, 91, 122, 0.15);
+  --accent-text: #5B4A6F;
+  --accent-glow: rgba(107, 91, 122, 0.35);
+
+  /* Semantic (classic ledger inks) */
+  --success: #4A7C59;
+  --success-muted: rgba(74, 124, 89, 0.15);
+  --success-glow: rgba(74, 124, 89, 0.35);
+  --danger: #C54B3C;
+  --danger-muted: rgba(197, 75, 60, 0.12);
+  --warning: #B8860B;
+  --warning-muted: rgba(184, 134, 11, 0.12);
+
+  /* Shadows (warm-tinted) */
+  --shadow-sm: 0 1px 2px rgba(45, 42, 38, 0.08);
+  --shadow-md: 0 4px 12px rgba(45, 42, 38, 0.1);
+  --shadow-lg: 0 8px 24px rgba(45, 42, 38, 0.12);
+  --shadow-glow: 0 0 30px rgba(107, 91, 122, 0.25);
+}
+
+/* Ladurée background with ruled lines */
+[data-theme="laduree"] body::before {
+  background:
+    var(--bg-ruled-lines),
+    var(--bg-gradient-primary),
+    var(--bg-gradient-secondary),
+    var(--bg-noise);
+}
+
+/* Ladurée scrollbar */
+[data-theme="laduree"] ::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="laduree"] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.15);
+}
+
+/* Ladurée navbar - light background for light theme */
+[data-theme="laduree"] nav {
+  background: rgba(250, 246, 241, 0.92) !important;
+  border-bottom-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Ladurée form inputs - lighter focus state for light theme */
+[data-theme="laduree"] input:hover,
+[data-theme="laduree"] textarea:hover,
+[data-theme="laduree"] select:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+[data-theme="laduree"] input:focus,
+[data-theme="laduree"] textarea:focus,
+[data-theme="laduree"] select:focus {
+  background: rgba(255, 255, 255, 0.7);
 }

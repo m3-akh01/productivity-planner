@@ -3,6 +3,7 @@ import { z } from 'zod';
 export const CURRENT_SCHEMA_VERSION = 1;
 
 export const preferencesSchema = z.object({
+  theme: z.union([z.literal('midnight-editorial'), z.literal('laduree')]).default('laduree'),
   weekStartsOn: z.union([z.literal('sunday'), z.literal('monday')]),
   pomodoroMinutes: z.number().positive(),
   breakMinutes: z.number().positive(),
@@ -51,6 +52,8 @@ export const timerStateSchema = z.object({
   phase: z.union([z.literal('work'), z.literal('break')]),
   secondsLeft: z.number().nonnegative(),
   endsAt: z.number().int().nonnegative().optional().nullable(),
+  workDurationSeconds: z.number().positive().optional(),
+  breakDurationSeconds: z.number().positive().optional(),
   activeTaskRef: z
     .object({
       date: z.string(),

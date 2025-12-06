@@ -3,6 +3,39 @@ import { useAppStore } from '../store/appStore';
 import { PageHeader } from '../components';
 import styles from './SettingsPage.module.css';
 
+type PreferenceToggleOption<T extends string> = {
+  value: T;
+  label: string;
+  ariaLabel?: string;
+};
+
+function PreferenceToggleGroup<T extends string>({
+  value,
+  options,
+  onChange,
+}: {
+  value: T;
+  options: PreferenceToggleOption<T>[];
+  onChange: (value: T) => void;
+}) {
+  return (
+    <div className={styles.toggleGroup}>
+      {options.map((option) => (
+        <button
+          key={option.value}
+          className={`${styles.toggleBtn} ${
+            value === option.value ? styles.toggleActive : ''
+          }`}
+          onClick={() => onChange(option.value)}
+          aria-label={option.ariaLabel}
+        >
+          {option.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 export default function SettingsPage() {
   const schemaVersion = useAppStore((state) => state.schemaVersion);
   const lastImportedAt = useAppStore((state) => state.lastImportedAt);
@@ -15,7 +48,7 @@ export default function SettingsPage() {
   // Collapsible section states
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     preferences: true,
-    data: true,
+    data: false,
     danger: false,
   });
 
@@ -123,6 +156,30 @@ export default function SettingsPage() {
         {openSections.preferences && (
           <div className={styles.sectionContent}>
             <div className={styles.prefsGrid}>
+              {/* Theme */}
+              <div className={styles.prefCard}>
+                <div className={styles.prefInfo}>
+                  <h4 className={styles.prefTitle}>Theme</h4>
+                  <p className={styles.prefDesc}>Choose your visual style</p>
+                </div>
+                <PreferenceToggleGroup
+                  value={preferences.theme}
+                  options={[
+                    {
+                      value: 'laduree',
+                      label: 'Ladurée',
+                      ariaLabel: 'Use Ladurée theme',
+                    },
+                    {
+                      value: 'midnight-editorial',
+                      label: 'Nocturne',
+                      ariaLabel: 'Use Nocturne theme',
+                    },
+                  ]}
+                  onChange={(value) => updatePreferences({ theme: value })}
+                />
+              </div>
+
               {/* Week Starts On */}
               <div className={styles.prefCard}>
                 <div className={styles.prefInfo}>
@@ -132,26 +189,22 @@ export default function SettingsPage() {
                     Weekly plans are grouped by this choice. Changing it won’t delete anything but may shift which week older plans appear under.
                   </p>
                 </div>
-                <div className={styles.toggleGroup}>
-                  <button
-                    className={`${styles.toggleBtn} ${
-                      preferences.weekStartsOn === 'sunday' ? styles.toggleActive : ''
-                    }`}
-                    onClick={() => updatePreferences({ weekStartsOn: 'sunday' })}
-                    aria-label="Start week on Sunday"
-                  >
-                    Sun
-                  </button>
-                  <button
-                    className={`${styles.toggleBtn} ${
-                      preferences.weekStartsOn === 'monday' ? styles.toggleActive : ''
-                    }`}
-                    onClick={() => updatePreferences({ weekStartsOn: 'monday' })}
-                    aria-label="Start week on Monday"
-                  >
-                    Mon
-                  </button>
-                </div>
+                <PreferenceToggleGroup
+                  value={preferences.weekStartsOn}
+                  options={[
+                    {
+                      value: 'sunday',
+                      label: 'Sun',
+                      ariaLabel: 'Start week on Sunday',
+                    },
+                    {
+                      value: 'monday',
+                      label: 'Mon',
+                      ariaLabel: 'Start week on Monday',
+                    },
+                  ]}
+                  onChange={(value) => updatePreferences({ weekStartsOn: value })}
+                />
               </div>
 
               {/* Pomodoro Minutes */}
@@ -231,7 +284,7 @@ export default function SettingsPage() {
               {/* Sound Enabled */}
               <div className={styles.prefCard}>
                 <div className={styles.prefInfo}>
-                  <h4 className={styles.prefTitle}>Sound notifications</h4>
+                  <h4 className={styles.prefTitle}>Sound notification</h4>
                   <p className={styles.prefDesc}>Play sound when timer ends</p>
                 </div>
                 <button

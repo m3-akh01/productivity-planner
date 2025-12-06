@@ -404,7 +404,8 @@
   left: 3px;
   width: 20px;
   height: 20px;
-  background: var(--text-primary);
+  background: #ffffff;
+  border: 1px solid var(--accent);
   border-radius: var(--radius-full);
   transition: transform var(--transition-fast);
   box-shadow: var(--shadow-sm);

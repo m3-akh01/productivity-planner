@@ -38,6 +38,7 @@ export function HelpPopover({ title, bullets }: HelpPopoverProps) {
     };
   }, [isOpen]);
 
+
   return (
     <div className={styles.container}>
       <button

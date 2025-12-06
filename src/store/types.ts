@@ -1,6 +1,9 @@
 import { WeekStartOption } from '../core/date';
 
+export type ThemeId = 'midnight-editorial' | 'laduree';
+
 export type Preferences = {
+  theme: ThemeId;
   weekStartsOn: WeekStartOption;
   pomodoroMinutes: number;
   breakMinutes: number;
@@ -57,6 +60,8 @@ export type TimerState = {
   phase: TimerPhase;
   secondsLeft: number;
   endsAt?: number | null;
+  workDurationSeconds?: number;
+  breakDurationSeconds?: number;
   activeTaskRef?: TaskRef;
   uiOpen: boolean;
   lastError?: string;

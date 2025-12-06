@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useAppStore } from './store/appStore';
 import { usePomodoroEngine } from './hooks/usePomodoroEngine';
@@ -32,6 +33,14 @@ function RedirectIfOnboarded({ children }: { children: React.ReactNode }) {
 export default function App() {
   // Activate the pomodoro engine (handles timer ticks and sound)
   usePomodoroEngine();
+
+  const theme = useAppStore((state) => state.preferences.theme);
+
+  // Apply theme to the document root so CSS can target [data-theme]
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    document.documentElement.dataset.theme = theme;
+  }, [theme]);
 
   return (
     <Routes>

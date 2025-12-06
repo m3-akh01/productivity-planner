@@ -14,6 +14,11 @@ import {
   WeeklyPlan,
 } from './types';
 
+type SessionDurations = {
+  workMinutes?: number;
+  breakMinutes?: number;
+};
+
 type AppActions = {
   setName: (name: string) => void;
   setPledgeDraft: (pledgeDraft?: string) => void;
@@ -53,10 +58,10 @@ type AppActions = {
   };
   openTimer: () => void;
   closeTimer: () => void;
-  startWork: (taskRef?: TaskRef) => void;
-  startWorkOnTask: (date: string, taskIndex: number) => void;
-  startGenericWork: () => void;
-  startBreak: () => void;
+  startWork: (taskRef?: TaskRef, session?: SessionDurations) => void;
+  startWorkOnTask: (date: string, taskIndex: number, session?: SessionDurations) => void;
+  startGenericWork: (session?: SessionDurations) => void;
+  startBreak: (session?: Pick<SessionDurations, 'breakMinutes'>) => void;
   pause: () => void;
   resume: () => void;
   resetTimer: () => void;
@@ -74,6 +79,7 @@ const toDateFromInput = (input: string | Date): Date =>
   input instanceof Date ? input : new Date(`${input}T00:00:00`);
 
 const BASE_PREFERENCES: Preferences = {
+  theme: 'laduree',
   weekStartsOn: 'monday',
   pomodoroMinutes: 25,
   breakMinutes: 5,
@@ -88,6 +94,8 @@ const createTimerState = (preferences: Preferences): TimerState => ({
   phase: 'work',
   secondsLeft: preferences.pomodoroMinutes * 60,
   endsAt: null,
+  workDurationSeconds: preferences.pomodoroMinutes * 60,
+  breakDurationSeconds: preferences.breakMinutes * 60,
   activeTaskRef: undefined,
   uiOpen: false,
   lastError: undefined,
@@ -141,7 +149,7 @@ const normalizeTasks = (tasks: Task[] = []): Task[] => {
   return normalized;
 };
 
-const buildStartWorkUpdate = (state: AppStore, taskRef?: TaskRef): Partial<AppStore> => {
+const buildStartWorkUpdate = (state: AppStore, taskRef?: TaskRef, session?: SessionDurations): Partial<AppStore> => {
   const preferences = state.preferences;
   const activeTaskRef = taskRef ?? undefined;
   let dailyUpdates: Record<string, DailyEntry> | undefined;
@@ -162,12 +170,28 @@ const buildStartWorkUpdate = (state: AppStore, taskRef?: TaskRef): Partial<AppSt
     dailyUpdates = { ...state.daily, [activeTaskRef.date]: { ...entry, tasks } };
   }
 
-  const durationSeconds = preferences.pomodoroMinutes * 60;
+  const baseWorkSeconds = preferences.pomodoroMinutes * 60;
+  const baseBreakSeconds = preferences.breakMinutes * 60;
+
+  const workDurationSeconds =
+    typeof session?.workMinutes === 'number'
+      ? Math.max(5 * 60, Math.min(60 * 60, Math.round(session.workMinutes) * 60))
+      : baseWorkSeconds;
+
+  const breakDurationSeconds =
+    typeof session?.breakMinutes === 'number'
+      ? Math.max(1 * 60, Math.min(30 * 60, Math.round(session.breakMinutes) * 60))
+      : baseBreakSeconds;
+
+  const durationSeconds = workDurationSeconds;
   const timer: TimerState = {
+    ...state.timer,
     status: 'running',
     phase: 'work',
     secondsLeft: durationSeconds,
     endsAt: computeEndsAt(durationSeconds),
+    workDurationSeconds,
+    breakDurationSeconds,
     activeTaskRef,
     uiOpen: true,
     lastError: undefined,
@@ -223,8 +247,16 @@ const normalizeTimerState = (timer: TimerState | undefined, preferences: Prefere
   const phase: TimerState['phase'] = timer.phase === 'break' ? 'break' : 'work';
   const status: TimerState['status'] =
     timer.status === 'running' || timer.status === 'paused' ? timer.status : 'idle';
-  const phaseDuration = phase === 'work' ? preferences.pomodoroMinutes : preferences.breakMinutes;
-  const defaultSeconds = phaseDuration * 60;
+  const workDurationSeconds =
+    typeof timer.workDurationSeconds === 'number' && timer.workDurationSeconds > 0
+      ? timer.workDurationSeconds
+      : preferences.pomodoroMinutes * 60;
+  const breakDurationSeconds =
+    typeof timer.breakDurationSeconds === 'number' && timer.breakDurationSeconds > 0
+      ? timer.breakDurationSeconds
+      : preferences.breakMinutes * 60;
+
+  const defaultSeconds = phase === 'work' ? workDurationSeconds : breakDurationSeconds;
   let secondsLeft =
     typeof timer.secondsLeft === 'number' && timer.secondsLeft >= 0 ? timer.secondsLeft : defaultSeconds;
   let endsAt = timer.endsAt ?? null;
@@ -248,6 +280,8 @@ const normalizeTimerState = (timer: TimerState | undefined, preferences: Prefere
     phase,
     secondsLeft,
     endsAt,
+    workDurationSeconds,
+    breakDurationSeconds,
     activeTaskRef,
     uiOpen: !!timer.uiOpen,
     lastError: timer.lastError,
@@ -368,8 +402,16 @@ export const useAppStore = create<AppStore>()(
           const preferences = { ...state.preferences, ...prefs };
           const updates: Partial<AppStore> = { preferences };
           if (state.timer.status === 'idle') {
-            const baseMinutes = state.timer.phase === 'work' ? preferences.pomodoroMinutes : preferences.breakMinutes;
-            updates.timer = { ...state.timer, secondsLeft: baseMinutes * 60, endsAt: null };
+            const workSeconds = preferences.pomodoroMinutes * 60;
+            const breakSeconds = preferences.breakMinutes * 60;
+            const baseSeconds = state.timer.phase === 'work' ? workSeconds : breakSeconds;
+            updates.timer = {
+              ...state.timer,
+              secondsLeft: baseSeconds,
+              endsAt: null,
+              workDurationSeconds: workSeconds,
+              breakDurationSeconds: breakSeconds,
+            };
           }
           return updates;
         }),
@@ -616,21 +658,44 @@ export const useAppStore = create<AppStore>()(
         set((state) => ({
           timer: { ...state.timer, uiOpen: false },
         })),
-      startWork: (taskRef) => set((state) => buildStartWorkUpdate(state, taskRef)),
-      startWorkOnTask: (date, taskIndex) => set((state) => buildStartWorkUpdate(state, { date, taskIndex })),
-      startGenericWork: () => set((state) => buildStartWorkUpdate(state, undefined)),
-      startBreak: () =>
-        set((state) => ({
-          timer: {
-            ...state.timer,
-            phase: 'break',
-            status: 'running',
-            secondsLeft: state.preferences.breakMinutes * 60,
-            endsAt: computeEndsAt(state.preferences.breakMinutes * 60),
-            activeTaskRef: state.timer.activeTaskRef,
-            lastError: undefined,
-          },
-        })),
+      startWork: (taskRef, session) => set((state) => buildStartWorkUpdate(state, taskRef, session)),
+      startWorkOnTask: (date, taskIndex, session) =>
+        set((state) => buildStartWorkUpdate(state, { date, taskIndex }, session)),
+      startGenericWork: (session) => set((state) => buildStartWorkUpdate(state, undefined, session)),
+      startBreak: (session) =>
+        set((state) => {
+          const baseWorkSeconds = state.preferences.pomodoroMinutes * 60;
+          const baseBreakSeconds = state.preferences.breakMinutes * 60;
+
+          const workDurationSeconds =
+            typeof state.timer.workDurationSeconds === 'number' && state.timer.workDurationSeconds > 0
+              ? state.timer.workDurationSeconds
+              : baseWorkSeconds;
+
+          const breakDurationSecondsFromState =
+            typeof state.timer.breakDurationSeconds === 'number' && state.timer.breakDurationSeconds > 0
+              ? state.timer.breakDurationSeconds
+              : baseBreakSeconds;
+
+          const breakDurationSeconds =
+            typeof session?.breakMinutes === 'number'
+              ? Math.max(1 * 60, Math.min(30 * 60, Math.round(session.breakMinutes) * 60))
+              : breakDurationSecondsFromState;
+
+          return {
+            timer: {
+              ...state.timer,
+              phase: 'break',
+              status: 'running',
+              secondsLeft: breakDurationSeconds,
+              endsAt: computeEndsAt(breakDurationSeconds),
+              workDurationSeconds,
+              breakDurationSeconds,
+              activeTaskRef: state.timer.activeTaskRef,
+              lastError: undefined,
+            },
+          };
+        }),
       pause: () =>
         set((state) => {
           if (state.timer.status !== 'running') return {};
@@ -642,15 +707,19 @@ export const useAppStore = create<AppStore>()(
           if (state.timer.status !== 'paused') return {};
           const secondsLeft = Math.max(0, Math.round(state.timer.secondsLeft));
           if (secondsLeft <= 0) {
+            const workSeconds = state.preferences.pomodoroMinutes * 60;
+            const breakSeconds = state.preferences.breakMinutes * 60;
             return {
               timer: {
                 ...state.timer,
                 status: 'idle',
                 phase: 'work',
-                secondsLeft: state.preferences.pomodoroMinutes * 60,
+                secondsLeft: workSeconds,
                 endsAt: null,
                 activeTaskRef: undefined,
                 lastError: undefined,
+                workDurationSeconds: workSeconds,
+                breakDurationSeconds: breakSeconds,
               },
             };
           }
@@ -665,17 +734,23 @@ export const useAppStore = create<AppStore>()(
           };
         }),
       resetTimer: () =>
-        set((state) => ({
-          timer: {
-            ...state.timer,
-            status: 'idle',
-            phase: 'work',
-            secondsLeft: state.preferences.pomodoroMinutes * 60,
-            endsAt: null,
-            activeTaskRef: undefined,
-            lastError: undefined,
-          },
-        })),
+        set((state) => {
+          const workSeconds = state.preferences.pomodoroMinutes * 60;
+          const breakSeconds = state.preferences.breakMinutes * 60;
+          return {
+            timer: {
+              ...state.timer,
+              status: 'idle',
+              phase: 'work',
+              secondsLeft: workSeconds,
+              endsAt: null,
+              activeTaskRef: undefined,
+              lastError: undefined,
+              workDurationSeconds: workSeconds,
+              breakDurationSeconds: breakSeconds,
+            },
+          };
+        }),
       tick: () =>
         set((state) => {
           if (state.timer.status !== 'running') return {};
@@ -697,12 +772,23 @@ export const useAppStore = create<AppStore>()(
               dailyUpdates = { ...state.daily, [ref.date]: { ...entry, tasks } };
             }
 
+            const workDurationSeconds =
+              typeof state.timer.workDurationSeconds === 'number' && state.timer.workDurationSeconds > 0
+                ? state.timer.workDurationSeconds
+                : state.preferences.pomodoroMinutes * 60;
+            const breakDurationSeconds =
+              typeof state.timer.breakDurationSeconds === 'number' && state.timer.breakDurationSeconds > 0
+                ? state.timer.breakDurationSeconds
+                : state.preferences.breakMinutes * 60;
+
             const timer: TimerState = {
               ...state.timer,
               phase: 'break',
               status: 'running',
-              secondsLeft: state.preferences.breakMinutes * 60,
-              endsAt: computeEndsAt(state.preferences.breakMinutes * 60),
+              secondsLeft: breakDurationSeconds,
+              endsAt: computeEndsAt(breakDurationSeconds),
+              workDurationSeconds,
+              breakDurationSeconds,
               lastError: undefined,
             };
 
@@ -712,12 +798,23 @@ export const useAppStore = create<AppStore>()(
             };
           }
 
+          const workDurationSeconds =
+            typeof state.timer.workDurationSeconds === 'number' && state.timer.workDurationSeconds > 0
+              ? state.timer.workDurationSeconds
+              : state.preferences.pomodoroMinutes * 60;
+          const breakDurationSeconds =
+            typeof state.timer.breakDurationSeconds === 'number' && state.timer.breakDurationSeconds > 0
+              ? state.timer.breakDurationSeconds
+              : state.preferences.breakMinutes * 60;
+
           const timer: TimerState = {
             ...state.timer,
             phase: 'work',
             status: 'idle',
-            secondsLeft: state.preferences.pomodoroMinutes * 60,
+            secondsLeft: workDurationSeconds,
             endsAt: null,
+            workDurationSeconds,
+            breakDurationSeconds,
             lastError: undefined,
           };
 

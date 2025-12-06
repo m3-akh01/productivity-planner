@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppStore } from '../store/appStore';
 import { getGreeting } from '../core/greetings';
+import type { ThemeId } from '../store/types';
 import styles from './OnboardingWizard.module.css';
 
 type Step = 'name' | 'preferences' | 'pledge';
@@ -128,6 +129,7 @@ function PreferencesStep({
   onBack,
 }: {
   preferences: {
+    theme: ThemeId;
     weekStartsOn: 'sunday' | 'monday';
     pomodoroMinutes: number;
     breakMinutes: number;
@@ -148,6 +150,32 @@ function PreferencesStep({
       </div>
 
       <div className={styles.prefsGrid}>
+        {/* Theme */}
+        <div className={styles.prefCard}>
+          <div className={styles.prefInfo}>
+            <h4 className={styles.prefTitle}>Theme</h4>
+            <p className={styles.prefDesc}>Choose your visual style</p>
+          </div>
+          <div className={styles.toggleGroup}>
+            <button
+              className={`${styles.toggleBtn} ${
+                preferences.theme === 'laduree' ? styles.toggleActive : ''
+              }`}
+              onClick={() => onUpdate({ theme: 'laduree' })}
+            >
+              Ladurée
+            </button>
+            <button
+              className={`${styles.toggleBtn} ${
+                preferences.theme === 'midnight-editorial' ? styles.toggleActive : ''
+              }`}
+              onClick={() => onUpdate({ theme: 'midnight-editorial' })}
+            >
+              Nocturne
+            </button>
+          </div>
+        </div>
+
         {/* Week Starts On */}
         <div className={styles.prefCard}>
           <div className={styles.prefInfo}>
@@ -251,7 +279,7 @@ function PreferencesStep({
         {/* Sound Enabled */}
         <div className={styles.prefCard}>
           <div className={styles.prefInfo}>
-            <h4 className={styles.prefTitle}>Sound notifications</h4>
+            <h4 className={styles.prefTitle}>Sound notification</h4>
             <p className={styles.prefDesc}>Play sound when timer ends</p>
           </div>
           <button
@@ -337,6 +365,7 @@ export function OnboardingWizard() {
   // Local state for wizard (will save to store on completion)
   const [name, setName] = useState('');
   const [preferences, setPreferences] = useState({
+    theme: 'laduree' as ThemeId,
     weekStartsOn: 'monday' as 'sunday' | 'monday',
     pomodoroMinutes: 25,
     breakMinutes: 5,
@@ -412,7 +441,12 @@ export function OnboardingWizard() {
           {currentStep === 'preferences' && (
             <PreferencesStep
               preferences={preferences}
-              onUpdate={(updates) => setPreferences((prev) => ({ ...prev, ...updates }))}
+              onUpdate={(updates) => {
+                setPreferences((prev) => ({ ...prev, ...updates }));
+                if (updates.theme) {
+                  updatePreferences({ theme: updates.theme });
+                }
+              }}
               onNext={handleNext}
               onBack={handleBack}
             />

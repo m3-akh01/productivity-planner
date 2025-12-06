@@ -1,28 +1,62 @@
 import { useEffect } from 'react';
 import { useAppStore } from '../store/appStore';
+import timerEndChimeUrl from '../assets/timer-end.mp3';
 
-const BEEP_DURATION_MS = 160;
+const BEEP_DURATION_MS = 700;
 const BEEP_FREQUENCY = 880;
 
-function playBeep() {
+let cachedAudio: HTMLAudioElement | null = null;
+
+function playFallbackBeep() {
   try {
     const ctx = new AudioContext();
-    const oscillator = ctx.createOscillator();
     const gain = ctx.createGain();
-    oscillator.type = 'sine';
-    oscillator.frequency.value = BEEP_FREQUENCY;
-    oscillator.connect(gain);
+    const primary = ctx.createOscillator();
+    const overtone = ctx.createOscillator();
+
+    primary.type = 'sine';
+    primary.frequency.value = BEEP_FREQUENCY;
+
+    overtone.type = 'sine';
+    overtone.frequency.value = BEEP_FREQUENCY * 1.5;
+
+    primary.connect(gain);
+    overtone.connect(gain);
     gain.connect(ctx.destination);
+
     const now = ctx.currentTime;
     const end = now + BEEP_DURATION_MS / 1000;
-    gain.gain.setValueAtTime(0.001, now);
-    gain.gain.exponentialRampToValueAtTime(0.1, now + 0.02);
+
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.linearRampToValueAtTime(0.04, now + 0.06);
     gain.gain.exponentialRampToValueAtTime(0.0001, end);
-    oscillator.start(now);
-    oscillator.stop(end);
+
+    primary.start(now);
+    overtone.start(now);
+    primary.stop(end);
+    overtone.stop(end);
   } catch {
     // Fail silently if AudioContext is unavailable.
   }
+}
+
+function playBeep() {
+  try {
+    if (typeof Audio !== 'undefined') {
+      if (!cachedAudio) {
+        cachedAudio = new Audio(timerEndChimeUrl);
+      }
+      cachedAudio.currentTime = 0;
+      void cachedAudio.play().catch(() => {
+        playFallbackBeep();
+      });
+      return;
+    }
+  } catch {
+    // Fall back to synthesized beep below.
+  }
+
+  playFallbackBeep();
 }
 
 export function usePomodoroEngine() {
@@ -34,12 +68,13 @@ export function usePomodoroEngine() {
     const intervalId = window.setInterval(() => {
       const state = useAppStore.getState();
       if (state.timer.status !== 'running') return;
-      const secondsRemaining = state.timer.endsAt
-        ? Math.max(0, Math.ceil((state.timer.endsAt - Date.now()) / 1000))
-        : state.timer.secondsLeft;
-      const shouldBeep = secondsRemaining <= 1;
+
+      const prevStatus = state.timer.status;
       state.tick();
-      if (shouldBeep && useAppStore.getState().preferences.soundEnabled) {
+
+      const nextState = useAppStore.getState();
+      const becameIdle = prevStatus === 'running' && nextState.timer.status === 'idle';
+      if (becameIdle && nextState.preferences.soundEnabled) {
         playBeep();
       }
     }, 1000);

@@ -26,26 +26,50 @@ export function TimerBubble() {
     }
   }, [preferences.pomodoroMinutes, preferences.breakMinutes, timer.status]);
 
-  const { status, phase, secondsLeft, uiOpen, lastError } = timer;
+  const { status, phase, secondsLeft, uiOpen, lastError, workDurationSeconds, breakDurationSeconds } = timer;
 
-  const minutes = Math.floor(secondsLeft / 60);
-  const seconds = secondsLeft % 60;
+  const isActive = status === 'running' || status === 'paused';
+
+  const effectiveSecondsLeft =
+    status === 'idle'
+      ? (phase === 'work' ? sessionWorkMinutes * 60 : sessionBreakMinutes * 60)
+      : secondsLeft;
+
+  const minutes = Math.floor(effectiveSecondsLeft / 60);
+  const seconds = effectiveSecondsLeft % 60;
   const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
   // Progress percentage for the ring
-  const totalSeconds = phase === 'work'
-    ? sessionWorkMinutes * 60
-    : sessionBreakMinutes * 60;
-  const progress = totalSeconds > 0 ? ((totalSeconds - secondsLeft) / totalSeconds) * 100 : 0;
+  const effectiveWorkTotal =
+    typeof workDurationSeconds === 'number' && workDurationSeconds > 0
+      ? workDurationSeconds
+      : sessionWorkMinutes * 60;
+  const effectiveBreakTotal =
+    typeof breakDurationSeconds === 'number' && breakDurationSeconds > 0
+      ? breakDurationSeconds
+      : sessionBreakMinutes * 60;
+
+  const totalSeconds =
+    phase === 'work'
+      ? effectiveWorkTotal
+      : effectiveBreakTotal;
+
+  const progress =
+    isActive && totalSeconds > 0 ? ((totalSeconds - secondsLeft) / totalSeconds) * 100 : 0;
   const circumference = 2 * Math.PI * 26; // radius = 26
   const strokeDashoffset = circumference - (progress / 100) * circumference;
 
   const handleStartWork = () => {
-    startGenericWork();
+    startGenericWork({
+      workMinutes: sessionWorkMinutes,
+      breakMinutes: sessionBreakMinutes,
+    });
   };
 
   const handleStartBreak = () => {
-    startBreak();
+    startBreak({
+      breakMinutes: sessionBreakMinutes,
+    });
   };
 
   const handlePauseResume = () => {

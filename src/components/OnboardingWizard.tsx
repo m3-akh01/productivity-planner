@@ -51,7 +51,7 @@ function NameStep({
     { hour: 8, label: 'Morning' },
     { hour: 14, label: 'Afternoon' },
     { hour: 18, label: 'Evening' },
-    { hour: 2, label: 'Night Owl' },
+    { hour: 22, label: 'Late Evening' },
   ];
 
   const displayName = name.trim() || 'friend';
